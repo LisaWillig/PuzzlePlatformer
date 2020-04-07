@@ -28,6 +28,18 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
+		UMaterialInstance* TriggerActive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
+		UMaterialInstance* TriggerSleep;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
+	UStaticMeshComponent* MeshTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trigger")
+	bool active = false;
+
 private:
 
 	UPROPERTY(VisibleAnywhere)
@@ -35,5 +47,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Trigger")
 	TArray<class AMovingPlatform*> PlatformsToTrigger;
+
+
 
 };

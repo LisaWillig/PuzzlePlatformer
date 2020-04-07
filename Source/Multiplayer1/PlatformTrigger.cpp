@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "MovingPlatform.h" 
 #include "Components/PrimitiveComponent.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 APlatformTrigger::APlatformTrigger()
@@ -17,6 +18,9 @@ APlatformTrigger::APlatformTrigger()
 	if (!ensure(TriggerVolume != nullptr)){return;}
 
 	RootComponent = TriggerVolume;
+
+	MeshTrigger = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TriggerMesh"));
+	MeshTrigger->SetupAttachment(RootComponent);
 	
 }
 
@@ -33,12 +37,14 @@ void APlatformTrigger::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor*
 	for (AMovingPlatform* element : PlatformsToTrigger) {
 		element->removeActiveTrigger();
 	}
+	active = false;
 }
 
 void APlatformTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	for (AMovingPlatform* element : PlatformsToTrigger) {
 		element->addActiveTrigger();
 	}
+	active = true;
 }
 
 // Called every frame

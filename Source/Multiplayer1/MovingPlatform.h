@@ -37,5 +37,15 @@ public:
 	int activeTriggers = 1;
 
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
+	UMaterialInstance* TriggerActive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
+	UMaterialInstance* TriggerSleep;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
+	UMaterialInstance* TriggerNeutral;
+
 	
 };
