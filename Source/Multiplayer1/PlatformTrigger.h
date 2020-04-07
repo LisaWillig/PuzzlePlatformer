@@ -29,10 +29,10 @@ public:
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
-		UMaterialInstance* TriggerActive;
+	class UMaterialInstance* TriggerActive;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
-		UMaterialInstance* TriggerSleep;
+	class UMaterialInstance* TriggerSleep;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
 	UStaticMeshComponent* MeshTrigger;
