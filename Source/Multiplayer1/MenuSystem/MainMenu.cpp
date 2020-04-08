@@ -3,6 +3,8 @@
 
 #include "MainMenu.h"
 #include "Components/Button.h"
+#include "Components/EditableText.h"
+#include "Components/WidgetSwitcher.h"
 
 bool UMainMenu::Initialize() {
 	bool Success = Super::Initialize();
@@ -11,57 +13,46 @@ bool UMainMenu::Initialize() {
 	if (!ensure(HostButton != nullptr)) return false;
 	HostButton->OnClicked.AddDynamic(this, &UMainMenu::Host);
 
+	if (!ensure(JoinMenuButton != nullptr)) return false;
+	JoinMenuButton->OnClicked.AddDynamic(this, &UMainMenu::OpenJoinMenu);
+
+	if (!ensure(CancelButton != nullptr)) return false;
+	CancelButton->OnClicked.AddDynamic(this, &UMainMenu::OpenMainMenu);
+
 	if (!ensure(JoinButton != nullptr)) return false;
 	JoinButton->OnClicked.AddDynamic(this, &UMainMenu::Join);
+
+	if (!ensure(QuitGameButton != nullptr)) return false;
+	QuitGameButton->OnClicked.AddDynamic(this, &UMainMenu::Quit);
 
 	return true;
 }
 
-void UMainMenu::SetMenuInterface(IMenuInterface* MenuInterace) {
-	this->MenuInterface = MenuInterace;
-}
-
-void UMainMenu::OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) {
-	RemoveFromViewport();
-	auto* world = GetWorld();
-	if (!ensure(world != nullptr))
-		return;
-	auto* playerController = world->GetFirstPlayerController();
-	if (!ensure(playerController != nullptr))
-		return;
-	FInputModeGameOnly inputMode;
-	playerController->SetInputMode(inputMode);
-	playerController->bShowMouseCursor = false;
-	Super::OnLevelRemovedFromWorld(InLevel, InWorld);
+void UMainMenu::Quit() {
+	if (MenuInterface == nullptr) return;
+	MenuInterface->QuitGame();
 }
 
 void UMainMenu::Host() {
 	if (MenuInterface == nullptr) return; 
 	MenuInterface->Host();
-
-	UE_LOG(LogTemp, Warning, TEXT("I am hosting!"))
 }
 
-void UMainMenu::Setup(){
-	this->AddToViewport();
-	UWorld* World = GetWorld();
-	if (!ensure(World != nullptr)) return;
-
-	APlayerController* PlayerController = World->GetFirstPlayerController();
-
-	FInputModeUIOnly InputMode;
-	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-	InputMode.SetWidgetToFocus(this->TakeWidget());
-
-	PlayerController->SetInputMode(InputMode);
-	PlayerController->bShowMouseCursor = true;
-
-
-}
 void UMainMenu::Join() {
-	if (MenuInterface != nullptr) return;
-	const FString Address = "test";
-	MenuInterface->Join(Address);
+	if (MenuInterface == nullptr) return;
+	if (IPAddressField == nullptr) return;
+	const FText Address = IPAddressField->GetText();
+	MenuInterface->Join(Address.ToString());
+}
 
-	UE_LOG(LogTemp, Warning, TEXT("I am joining!"))
+void UMainMenu::OpenJoinMenu() {
+	if (!ensure(MenuSwitch != nullptr)) return;
+	if (!ensure(JoinMenu != nullptr)) return;
+	MenuSwitch->SetActiveWidget(JoinMenu);
+}
+
+void UMainMenu::OpenMainMenu() {
+	if (!ensure(MenuSwitch != nullptr)) return;
+	if (!ensure(MainMenu != nullptr)) return;
+	MenuSwitch->SetActiveWidget(MainMenu);
 }
