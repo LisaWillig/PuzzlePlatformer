@@ -24,6 +24,8 @@ public:
 	virtual void Host() override;
 	virtual void Join(const FString& Address) override;
 
+	class UMainMenu* Menu;
+
 	void CreateSession();
 
 	UFUNCTION(BlueprintCallable)
@@ -38,7 +40,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void QuitGame() override;
 
+	UFUNCTION(BlueprintCallable)
+	virtual void UpdateServerList() override;
+
 private:
+
+	
 
 	TSubclassOf<class UUserWidget> MenuClass; 
 	TSubclassOf<class UUserWidget> InGameMenuClass;

@@ -4,10 +4,22 @@
 #include "MainMenu.h"
 #include "Components/Button.h"
 #include "Components/EditableText.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Components/WidgetSwitcher.h"
+#include "Components/TextBlock.h"
+
+#include "ScrollWidget.h"
+
+UMainMenu::UMainMenu() {
+	ConstructorHelpers::FClassFinder<UUserWidget> ServerScrollBP(TEXT("/Game/MenuSystem/WBP_ScrollBox"));
+	if (!ensure(ServerScrollBP.Class != nullptr))return;
+	ServerScrollClass = ServerScrollBP.Class;
+}
+
 
 bool UMainMenu::Initialize() {
 	bool Success = Super::Initialize();
+
 	if (!Success) return false;
 
 	if (!ensure(HostButton != nullptr)) return false;
@@ -38,11 +50,20 @@ void UMainMenu::Host() {
 	MenuInterface->Host();
 }
 
+void UMainMenu::SetServerList(TArray<FString> ServerNames) {
+	if (!ensure(ServerScrollClass != nullptr))return;
+	ServerList->ClearChildren();
+	for (const FString& ServerName : ServerNames) {
+		UScrollWidget* Row = CreateWidget<UScrollWidget>(this, ServerScrollClass);
+		if (!ensure(Row != nullptr))return;
+		Row->ServerName->SetText(FText::FromString(ServerName));
+		ServerList->AddChild(Row);
+	}
+}
+
 void UMainMenu::Join() {
 	if (MenuInterface == nullptr) return;
-	if (IPAddressField == nullptr) return;
-	const FText Address = IPAddressField->GetText();
-	MenuInterface->Join(Address.ToString());
+	MenuInterface->UpdateServerList();
 }
 
 void UMainMenu::OpenJoinMenu() {

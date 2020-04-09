@@ -15,11 +15,17 @@ class MULTIPLAYER1_API UMainMenu : public UMenuWidget
 {
 	GENERATED_BODY()
 	
+public:
+	UMainMenu();
+
+	void SetServerList(TArray<FString> ServerNames);
 protected:
 
 	virtual bool Initialize() override;
-
+	
 private:
+
+	TSubclassOf<class UUserWidget> ServerScrollClass;
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* HostButton;
@@ -46,7 +52,7 @@ private:
 	class UWidget* MainMenu;
 
 	UPROPERTY(meta = (BindWidget))
-	class UEditableText* IPAddressField;
+	class UPanelWidget* ServerList;
 
 	UFUNCTION()
 	void Quit();
