@@ -22,7 +22,7 @@ public:
 	UPuzzlePlatformGameInstance();
 	virtual void Init() override;
 	virtual void Host() override;
-	virtual void Join(const FString& Address) override;
+	virtual void Join(uint32 Index) override;
 
 	class UMainMenu* Menu;
 
@@ -49,12 +49,12 @@ private:
 
 	TSubclassOf<class UUserWidget> MenuClass; 
 	TSubclassOf<class UUserWidget> InGameMenuClass;
-	TArray<FOnlineSessionSearchResult> SearchResults;
 
 	class TSharedPtr<FOnlineSessionSearch> SessionSearch; 
 	IOnlineSessionPtr SessionInterface;
 	void OnCreateSessionComplete(FName SessionName, bool Success);
 	void OnDestroySessionComplete(FName SessionName, bool Success);
 	void OnFindSessionsComplete(bool Success);
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
 };

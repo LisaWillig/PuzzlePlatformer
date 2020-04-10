@@ -14,7 +14,30 @@ class MULTIPLAYER1_API UScrollWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+protected:
+
+	virtual bool Initialize() override;
+
 public:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* ServerName;
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* HostID;
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* CurrentPlayer;
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* MaxPlayer;
+	
+	UPROPERTY(meta = (BindWidget))
+	class UButton* ServerNameButton;
+
+	void Setup(class UMainMenu* Parent, uint32 Index);
+
+	UFUNCTION()
+	void ReturnIndex();
+
+	uint32 MyIndex; 
+
+	UPROPERTY()
+	class UMainMenu* ParentMenu; 
 };

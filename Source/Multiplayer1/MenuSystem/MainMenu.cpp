@@ -50,26 +50,45 @@ void UMainMenu::Host() {
 	MenuInterface->Host();
 }
 
-void UMainMenu::SetServerList(TArray<FString> ServerNames) {
+void UMainMenu::SetServerList(TArray<FServerData> ServerNames) {
 	if (!ensure(ServerScrollClass != nullptr))return;
 	ServerList->ClearChildren();
-	for (const FString& ServerName : ServerNames) {
+	uint32 i = 0;
+	for (const FServerData& ServerName : ServerNames) {
 		UScrollWidget* Row = CreateWidget<UScrollWidget>(this, ServerScrollClass);
 		if (!ensure(Row != nullptr))return;
-		Row->ServerName->SetText(FText::FromString(ServerName));
+		Row->ServerName->SetText(FText::FromString(ServerName.Name));
+		Row->HostID->SetText(FText::FromString(ServerName.HostUsername));
+		Row->CurrentPlayer->SetText(FText::AsNumber(ServerName.CurrentPlayers));
+		Row->MaxPlayer->SetText(FText::AsNumber(ServerName.MaxPlayers));
+		Row->Setup(this, i);
+		++i;
 		ServerList->AddChild(Row);
 	}
 }
 
+void UMainMenu::SelectIndex(uint32 Index) {
+	SelectedIndex = Index;
+}
+
 void UMainMenu::Join() {
-	if (MenuInterface == nullptr) return;
-	MenuInterface->UpdateServerList();
+	
+	if (SelectedIndex.IsSet() && MenuInterface != nullptr) {
+		MenuInterface->Join(SelectedIndex.GetValue());
+		UE_LOG(LogTemp, Warning, TEXT("Selected Index %d"), SelectedIndex.GetValue())
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("No Session Chosen"))
+	}
 }
 
 void UMainMenu::OpenJoinMenu() {
 	if (!ensure(MenuSwitch != nullptr)) return;
 	if (!ensure(JoinMenu != nullptr)) return;
 	MenuSwitch->SetActiveWidget(JoinMenu);
+	if (MenuInterface != nullptr) {
+		MenuInterface->UpdateServerList();
+	}
 }
 
 void UMainMenu::OpenMainMenu() {

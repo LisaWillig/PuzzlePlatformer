@@ -7,6 +7,16 @@
 #include "MenuInterface.h"
 #include "MainMenu.generated.h"
 
+USTRUCT()
+struct FServerData {
+	GENERATED_BODY()
+
+	FString Name; 
+	uint16 CurrentPlayers;
+	uint16 MaxPlayers;
+	FString HostUsername;
+};
+
 /**
  * 
  */
@@ -18,7 +28,9 @@ class MULTIPLAYER1_API UMainMenu : public UMenuWidget
 public:
 	UMainMenu();
 
-	void SetServerList(TArray<FString> ServerNames);
+	void SetServerList(TArray<FServerData> ServerNames);
+	void SelectIndex(uint32 Index);
+
 protected:
 
 	virtual bool Initialize() override;
@@ -54,6 +66,8 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UPanelWidget* ServerList;
 
+
+
 	UFUNCTION()
 	void Quit();
 	UFUNCTION()
@@ -65,6 +79,7 @@ private:
 	UFUNCTION()
 	void OpenMainMenu();
 
+	TOptional<uint32> SelectedIndex;
 
 
 };

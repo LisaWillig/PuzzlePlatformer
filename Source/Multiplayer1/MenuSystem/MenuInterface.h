@@ -24,7 +24,7 @@ class MULTIPLAYER1_API IMenuInterface
 public:
 
 	virtual void Host() = 0;
-	virtual void Join(const FString& Address) = 0;
+	virtual void Join(const uint32 Index) = 0;
 	virtual void LoadMainMenu() = 0;
 	virtual void QuitGame() = 0;
 	virtual void UpdateServerList() = 0;
