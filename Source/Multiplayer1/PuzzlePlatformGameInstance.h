@@ -43,6 +43,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void UpdateServerList() override;
 
+	void StartSession();
+
 private:
 
 	FText ServerName;
