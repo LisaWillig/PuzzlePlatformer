@@ -15,7 +15,7 @@
 #include "Delegates/DelegateSignatureImpl.inl"
 #include "Delegates/DelegateInstanceInterface.h"
 
-const static FName SESSION_NAME = TEXT("My Game Session");
+const static FName SESSION_NAME = NAME_GameSession;
 const static FName SERVERNAME_SETTING_KEY = TEXT("ServerName");
 
 UPuzzlePlatformGameInstance::UPuzzlePlatformGameInstance() {
@@ -63,7 +63,7 @@ void UPuzzlePlatformGameInstance::OnCreateSessionComplete(FName SessionName, boo
 	UWorld* World = GetWorld();
 	if (!ensure(World != nullptr)) return;
 
-	World->ServerTravel("/Game/Maps/Puzzle?listen");
+	World->ServerTravel("/Game/Maps/Lobby?listen");
 }
 
 void UPuzzlePlatformGameInstance::OnFindSessionsComplete(bool Success) {
@@ -139,7 +139,7 @@ void UPuzzlePlatformGameInstance::CreateSession() {
 		else {
 			Settings.bIsLANMatch = false;
 		}
-		Settings.NumPublicConnections = 2;
+		Settings.NumPublicConnections = 5;
 		Settings.bShouldAdvertise = true;
 		Settings.bUsesPresence = true;
 		if (ServerName.ToString() != "") {
@@ -172,6 +172,11 @@ void UPuzzlePlatformGameInstance::OnJoinSessionComplete(FName SessionName, EOnJo
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (!ensure(PlayerController != nullptr)) return;
 	PlayerController->ClientTravel(Info, ETravelType::TRAVEL_Absolute);
+}
+
+void UPuzzlePlatformGameInstance::StartSession() {
+	if (!SessionInterface.IsValid()) return;
+	SessionInterface->StartSession(SESSION_NAME);
 }
 
 void UPuzzlePlatformGameInstance::LoadMainMenu() {
