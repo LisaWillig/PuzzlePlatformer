@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "MenuWidget.h"
 #include "MenuInterface.h"
+#include "Components/EditableTextBox.h"
 #include "MainMenu.generated.h"
 
 USTRUCT()
@@ -12,6 +13,7 @@ struct FServerData {
 	GENERATED_BODY()
 
 	FString Name; 
+	FString NameId;
 	uint16 CurrentPlayers;
 	uint16 MaxPlayers;
 	FString HostUsername;
@@ -49,7 +51,13 @@ private:
 	class UButton* JoinMenuButton;
 
 	UPROPERTY(meta = (BindWidget))
+	class UButton* HostMenuButton;
+
+	UPROPERTY(meta = (BindWidget))
 	class UButton* CancelButton;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* CancelHostButton;
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* QuitGameButton;
@@ -61,12 +69,16 @@ private:
 	class UWidget* JoinMenu;
 
 	UPROPERTY(meta = (BindWidget))
+	class UWidget* HostMenu;
+
+	UPROPERTY(meta = (BindWidget))
 	class UWidget* MainMenu;
 
 	UPROPERTY(meta = (BindWidget))
 	class UPanelWidget* ServerList;
 
-
+	UPROPERTY(meta = (BindWidget))
+	class UEditableText* ServerNameLine;
 
 	UFUNCTION()
 	void Quit();
@@ -78,6 +90,8 @@ private:
 	void OpenJoinMenu();
 	UFUNCTION()
 	void OpenMainMenu();
+	UFUNCTION()
+	void OpenHostMenu();
 
 	TOptional<uint32> SelectedIndex;
 

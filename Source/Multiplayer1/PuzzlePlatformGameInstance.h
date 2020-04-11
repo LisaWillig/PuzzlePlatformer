@@ -21,7 +21,7 @@ class MULTIPLAYER1_API UPuzzlePlatformGameInstance : public UGameInstance, publi
 public:
 	UPuzzlePlatformGameInstance();
 	virtual void Init() override;
-	virtual void Host() override;
+	virtual void Host(FText UserServerName) override;
 	virtual void Join(uint32 Index) override;
 
 	class UMainMenu* Menu;
@@ -45,7 +45,7 @@ public:
 
 private:
 
-	
+	FText ServerName;
 
 	TSubclassOf<class UUserWidget> MenuClass; 
 	TSubclassOf<class UUserWidget> InGameMenuClass;

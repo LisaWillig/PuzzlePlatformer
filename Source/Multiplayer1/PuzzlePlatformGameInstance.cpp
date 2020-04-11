@@ -16,6 +16,7 @@
 #include "Delegates/DelegateInstanceInterface.h"
 
 const static FName SESSION_NAME = TEXT("My Game Session");
+const static FName SERVERNAME_SETTING_KEY = TEXT("ServerName");
 
 UPuzzlePlatformGameInstance::UPuzzlePlatformGameInstance() {
 
@@ -71,13 +72,20 @@ void UPuzzlePlatformGameInstance::OnFindSessionsComplete(bool Success) {
 		for (const FOnlineSessionSearchResult result : SessionSearch->SearchResults) {
 			
 			FServerData Data;
-			Data.Name = result.GetSessionIdStr(); 
+			Data.NameId = result.GetSessionIdStr();
 			Data.MaxPlayers = result.Session.SessionSettings.NumPublicConnections;
 			Data.CurrentPlayers = result.Session.SessionSettings.NumPublicConnections - result.Session.NumOpenPublicConnections;
 			Data.HostUsername = result.Session.OwningUserName;
+			FString ServerUserName;
+			if (result.Session.SessionSettings.Get(SERVERNAME_SETTING_KEY, ServerUserName)) {
+				Data.Name = ServerUserName;
+				UE_LOG(LogTemp, Warning, TEXT("Session: %s"), *ServerUserName)
+			}
+			else {
+				Data.Name = Data.NameId;
+				UE_LOG(LogTemp, Warning, TEXT("No Settings found"))
+			}
 			ServerNames.Add(Data);
-			
-			UE_LOG(LogTemp, Warning, TEXT("Session: %s, MaxPlayers: %i, Current Player: %i, Host Username:%s"), *Data.Name, Data.MaxPlayers, Data.CurrentPlayers, *Data.HostUsername )
 		}
 		Menu->SetServerList(ServerNames);
 	}
@@ -89,7 +97,8 @@ void UPuzzlePlatformGameInstance::OnDestroySessionComplete(FName SessionName, bo
 	}
 }
 
-void UPuzzlePlatformGameInstance::Host() {
+void UPuzzlePlatformGameInstance::Host(FText UserServerName) {
+	ServerName = UserServerName;
 	if (SessionInterface.IsValid()) {
 		auto ExistingSession = SessionInterface->GetNamedSession(SESSION_NAME);
 		if (ExistingSession != nullptr) {
@@ -133,6 +142,10 @@ void UPuzzlePlatformGameInstance::CreateSession() {
 		Settings.NumPublicConnections = 2;
 		Settings.bShouldAdvertise = true;
 		Settings.bUsesPresence = true;
+		if (ServerName.ToString() != "") {
+			Settings.Set(SERVERNAME_SETTING_KEY, ServerName.ToString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+		}
+		
 		SessionInterface->CreateSession(0, SESSION_NAME, Settings);
 	}
 }
